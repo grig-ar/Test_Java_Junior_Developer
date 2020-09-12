@@ -4,6 +4,7 @@ import com.sun.istack.internal.NotNull;
 import model.Product;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class ShopProduct implements Product {
     @NotNull
@@ -16,6 +17,10 @@ public class ShopProduct implements Product {
     private final BigDecimal price;
 
     ShopProduct(@NotNull int id, @NotNull String firstName, @NotNull BigDecimal price) {
+        Objects.requireNonNull(id);
+        Objects.requireNonNull(firstName);
+        Objects.requireNonNull(price);
+
         this.id = id;
         this.name = firstName;
         this.price = price;

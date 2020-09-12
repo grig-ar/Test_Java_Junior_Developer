@@ -4,6 +4,7 @@ import com.sun.istack.internal.NotNull;
 import model.Purchase;
 
 import java.sql.Date;
+import java.util.Objects;
 
 public class ShopPurchase implements Purchase {
     @NotNull
@@ -19,6 +20,11 @@ public class ShopPurchase implements Purchase {
     private final int productId;
 
     ShopPurchase(@NotNull int id, @NotNull Date purchaseDate, @NotNull int customerId, @NotNull int productId) {
+        Objects.requireNonNull(id);
+        Objects.requireNonNull(purchaseDate);
+        Objects.requireNonNull(customerId);
+        Objects.requireNonNull(productId);
+
         this.id = id;
         this.purchaseDate = purchaseDate;
         this.customerId = customerId;

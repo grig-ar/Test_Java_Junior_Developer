@@ -1,17 +1,10 @@
 package db;
 
-import db.dao.ShopCustomerDao;
-import db.dao.ShopProductDao;
-import db.dao.ShopPurchaseDao;
 import db.executor.AppExecutor;
 
 public class ShopDatabase {
     private static volatile ShopDatabase instance;
     private AppExecutor appExecutor;
-
-    public ShopCustomerDao shopCustomerDao;
-    public ShopProductDao shopProductDao;
-    public ShopPurchaseDao shopPurchaseDao;
 
     private ShopDatabase() {
 
