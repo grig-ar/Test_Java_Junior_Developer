@@ -5,9 +5,6 @@ import db.dao.ShopProductDao;
 import db.dao.ShopPurchaseDao;
 import db.executor.AppExecutor;
 
-import java.io.InputStream;
-import java.sql.Connection;
-
 public class ShopDatabase {
     private static volatile ShopDatabase instance;
     private AppExecutor appExecutor;
