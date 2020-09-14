@@ -19,7 +19,7 @@ public class ShopPurchase implements Purchase {
     @NotNull
     private final int productId;
 
-    ShopPurchase(@NotNull int id, @NotNull Date purchaseDate, @NotNull int customerId, @NotNull int productId) {
+    public ShopPurchase(@NotNull int id, @NotNull Date purchaseDate, @NotNull int customerId, @NotNull int productId) {
         Objects.requireNonNull(id);
         Objects.requireNonNull(purchaseDate);
         Objects.requireNonNull(customerId);

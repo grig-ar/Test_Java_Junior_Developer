@@ -16,7 +16,7 @@ public class ShopProduct implements Product {
     @NotNull
     private final BigDecimal price;
 
-    ShopProduct(@NotNull int id, @NotNull String firstName, @NotNull BigDecimal price) {
+    public ShopProduct(@NotNull int id, @NotNull String firstName, @NotNull BigDecimal price) {
         Objects.requireNonNull(id);
         Objects.requireNonNull(firstName);
         Objects.requireNonNull(price);

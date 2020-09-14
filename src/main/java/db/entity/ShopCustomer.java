@@ -15,7 +15,7 @@ public class ShopCustomer implements Customer {
     @NotNull
     private final String lastName;
 
-    ShopCustomer(@NotNull int id, @NotNull String firstName, @NotNull String lastName) {
+    public ShopCustomer(@NotNull int id, @NotNull String firstName, @NotNull String lastName) {
         Objects.requireNonNull(id);
         Objects.requireNonNull(firstName);
         Objects.requireNonNull(lastName);
