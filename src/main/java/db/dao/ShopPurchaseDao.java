@@ -68,20 +68,22 @@ public class ShopPurchaseDao {
     }
 
     int getTotalDaysAmount(Date lowerBound, Date upperBound) {
-        String query = "SELECT COUNT(the_day) FROM (" +
-                "SELECT GENERATE_SERIES(?, ?, '1 day') as the_day FROM (" +
-                "SELECT DISTINCT purchase_date FROM purchase WHERE purchase_date BETWEEN ? and ? and EXTRACT('ISODOW' FROM purchase_date) < 6" +
-                ") correct_days " +
-                ") days " +
-                "WHERE EXTRACT('ISODOW' FROM purchase_date) < 6";
+        String query = "SELECT COUNT(the_day) " +
+                " FROM ( " +
+                " SELECT generate_series(?, ?, '1 day') AS the_day " +
+                " ) days " +
+                " WHERE EXTRACT('ISODOW' FROM the_day) < 6";
 
         try (PreparedStatement stmt = database.getConnection().prepareStatement(query);
-             ResultSet resultSet = stmt.executeQuery()
         ) {
-            if (resultSet.next()) {
-                return resultSet.getInt(1);
-            } else {
-                return 0;
+            stmt.setDate(1, lowerBound);
+            stmt.setDate(2, upperBound);
+            try (ResultSet resultSet = stmt.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt(1);
+                } else {
+                    return 0;
+                }
             }
         } catch (SQLException ex) {
             ex.printStackTrace();

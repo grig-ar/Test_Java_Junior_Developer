@@ -54,7 +54,7 @@ public class ShopProductDao {
             while (resultSet.next()) {
                 products.add(new ShopProduct(
                         resultSet.getInt("id"),
-                        resultSet.getString("first_name"),
+                        resultSet.getString("name"),
                         resultSet.getBigDecimal("price")));
 
             }

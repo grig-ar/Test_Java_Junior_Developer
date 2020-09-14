@@ -1,5 +1,8 @@
 package db;
 
+import db.dao.ShopCustomerDao;
+import db.dao.ShopProductDao;
+import db.dao.ShopPurchaseDao;
 import db.executor.AppExecutor;
 
 import javax.sql.DataSource;
@@ -10,6 +13,10 @@ public class ShopDatabase {
     private DataSource dataSource;
     private static volatile ShopDatabase instance;
     private AppExecutor appExecutor;
+
+    private ShopPurchaseDao purchaseDao;
+    private ShopProductDao productDao;
+    private ShopCustomerDao customerDao;
 
     private ShopDatabase() {
 
@@ -22,6 +29,7 @@ public class ShopDatabase {
                     instance = new ShopDatabase();
                     instance.setExecutor(executor);
                     instance.setDataSource(dataSource);
+                    instance.setDao();
                 }
             }
         }
@@ -34,6 +42,24 @@ public class ShopDatabase {
 
     private void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
+    }
+
+    private void setDao() {
+        this.customerDao = new ShopCustomerDao(this);
+        this.productDao= new ShopProductDao(this);
+        this.purchaseDao = new ShopPurchaseDao(this);
+    }
+
+    public ShopPurchaseDao getPurchaseDao() {
+        return purchaseDao;
+    }
+
+    public ShopProductDao getProductDao() {
+        return productDao;
+    }
+
+    public ShopCustomerDao getCustomerDao() {
+        return customerDao;
     }
 
     public AppExecutor getAppExecutor() {
