@@ -10,7 +10,7 @@ public class AppExecutor {
         this.diskIO = diskIO;
     }
 
-    AppExecutor() {
+    public AppExecutor() {
         this(Executors.newSingleThreadExecutor());
     }
 
