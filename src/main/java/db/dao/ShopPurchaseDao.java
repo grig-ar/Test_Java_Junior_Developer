@@ -22,7 +22,7 @@ public class ShopPurchaseDao {
         this.database = database;
     }
 
-    ShopPurchase getShopPurchaseById(int id) {
+    public ShopPurchase getShopPurchaseById(int id) {
         String query = "SELECT id, purchase_date, customer_id, product_id FROM purchase WHERE id = ?";
         try (PreparedStatement stmt = database.getConnection().prepareStatement(query);
         ) {
@@ -46,7 +46,7 @@ public class ShopPurchaseDao {
         return null;
     }
 
-    List<ShopPurchase> getAllShopPurchases() {
+    public List<ShopPurchase> getAllShopPurchases() {
         List<ShopPurchase> purchases = new ArrayList<>();
         String query = "SELECT id, purchase_date, customer_id, product_id FROM purchase";
 
@@ -67,7 +67,7 @@ public class ShopPurchaseDao {
         return purchases;
     }
 
-    int getTotalDaysAmount(Date lowerBound, Date upperBound) {
+    public int getTotalDaysAmount(Date lowerBound, Date upperBound) {
         String query = "SELECT COUNT(the_day) " +
                 " FROM ( " +
                 " SELECT generate_series(?, ?, '1 day') AS the_day " +
