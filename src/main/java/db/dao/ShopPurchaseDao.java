@@ -43,7 +43,24 @@ public class ShopPurchaseDao {
     }
 
     List<ShopPurchase> getAllShopPurchases() {
+        List<ShopPurchase> purchases = new ArrayList<>();
+        String query = "SELECT id, purchase_date, customer_id, product_id FROM purchase";
 
+        try (PreparedStatement stmt = database.getConnection().prepareStatement(query);
+             ResultSet resultSet = stmt.executeQuery()
+        ) {
+            while (resultSet.next()) {
+                purchases.add(new ShopPurchase(
+                        resultSet.getInt("id"),
+                        resultSet.getDate("purchase_date"),
+                        resultSet.getInt("customer_id")
+                        resultSet.getInt("product_id")));
+
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return products;
     }
 
     int getTotalDaysAmount(Date lowerBound, Date upperBound) {
