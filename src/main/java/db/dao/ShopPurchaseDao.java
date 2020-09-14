@@ -19,7 +19,27 @@ public class ShopPurchaseDao {
     }
 
     ShopPurchase getShopPurchaseById(int id) {
+        String query = "SELECT id, purchase_date, customer_id, product_id FROM purchase WHERE id = ?";
+        try (PreparedStatement stmt = database.getConnection().prepareStatement(query);
+        ) {
+            stmt.setInt(1, id);
 
+            try (ResultSet resultSet = stmt.executeQuery()) {
+                if (resultSet.next()) {
+                    return new ShopPurchase(
+                            resultSet.getInt("id"),
+                            resultSet.getDate("purchase_date"),
+                            resultSet.getInt("customer_id")
+                            resultSet.getInt("product_id"));
+                } else {
+                    return null;
+                }
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 
     List<ShopPurchase> getAllShopPurchases() {
