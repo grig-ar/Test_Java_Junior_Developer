@@ -7,13 +7,13 @@ import java.util.Objects;
 
 public class ShopCustomer implements Customer {
     @NotNull
-    private final int id;
-
-    @NotNull
-    private final String firstName;
+    private final transient int id;
 
     @NotNull
     private final String lastName;
+
+    @NotNull
+    private final String firstName;
 
     public ShopCustomer(@NotNull int id, @NotNull String firstName, @NotNull String lastName) {
         Objects.requireNonNull(id);

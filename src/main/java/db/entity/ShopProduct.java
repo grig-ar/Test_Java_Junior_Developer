@@ -8,7 +8,7 @@ import java.util.Objects;
 
 public class ShopProduct implements Product {
     @NotNull
-    private final int id;
+    private final transient int id;
 
     @NotNull
     private final String name;
@@ -16,13 +16,13 @@ public class ShopProduct implements Product {
     @NotNull
     private final BigDecimal price;
 
-    public ShopProduct(@NotNull int id, @NotNull String firstName, @NotNull BigDecimal price) {
+    public ShopProduct(@NotNull int id, @NotNull String name, @NotNull BigDecimal price) {
         Objects.requireNonNull(id);
-        Objects.requireNonNull(firstName);
+        Objects.requireNonNull(name);
         Objects.requireNonNull(price);
 
         this.id = id;
-        this.name = firstName;
+        this.name = name;
         this.price = price;
     }
 
