@@ -1,28 +1,22 @@
 package repository;
 
-import com.sun.istack.internal.NotNull;
-import db.ShopDatabase;
+import org.jetbrains.annotations.NotNull;
 import db.dao.ShopCustomerDao;
 import db.dao.ShopProductDao;
 import db.dao.ShopPurchaseDao;
 import db.entity.ShopCustomer;
+import db.entity.ShopCustomerInfo;
 import db.entity.ShopProduct;
 import db.entity.ShopPurchase;
-import db.entity.ShopStatistics;
-import db.executor.AppExecutor;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.List;
-import java.util.Objects;
 
 public class DataRepository {
 
-    @NotNull
     private static volatile DataRepository instance;
-
-    @NotNull
-    private final AppExecutor appExecutor;
 
     @NotNull
     private final ShopCustomerDao shopCustomerDao;
@@ -33,72 +27,75 @@ public class DataRepository {
     @NotNull
     private final ShopPurchaseDao shopPurchaseDao;
 
-    private DataRepository(@NotNull final ShopDatabase database) {
-        Objects.requireNonNull(database);
-
-        shopCustomerDao = database.getCustomerDao();
-        shopProductDao = database.getProductDao();
-        shopPurchaseDao = database.getPurchaseDao();
-        appExecutor = database.getAppExecutor();
+    private DataRepository() {
+        shopCustomerDao = new ShopCustomerDao();
+        shopProductDao = new ShopProductDao();
+        shopPurchaseDao = new ShopPurchaseDao();
     }
 
-    public static DataRepository getInstance(@NotNull final ShopDatabase database) {
+    public static DataRepository getInstance() {
         if (instance == null) {
             synchronized (DataRepository.class) {
                 if (instance == null) {
-                    instance = new DataRepository(database);
+                    instance = new DataRepository();
                 }
             }
         }
         return instance;
     }
 
-    public ShopCustomer getShopCustomerById(int id) {
-
+    public ShopCustomer getShopCustomerById(int id) throws SQLException {
+        return shopCustomerDao.getShopCustomerById(id);
     }
 
-    public List<ShopCustomer> getAllShopCustomers() {
-
+    public List<ShopCustomer> getAllShopCustomers() throws SQLException {
+        return shopCustomerDao.getAllShopCustomers();
     }
 
-    public List<ShopCustomer> getShopCustomersByLastName(String lastName) {
-
+    public List<ShopCustomer> getShopCustomersByLastName(String lastName) throws SQLException {
+        return shopCustomerDao.getShopCustomersByLastName(lastName);
     }
 
-    public List<ShopCustomer> getShopCustomersByProductsAmount(String productName, int amount) {
-
+    public List<ShopCustomer> getShopCustomersByProductsAmount(String productName, int amount)
+            throws SQLException {
+        return shopCustomerDao.getShopCustomersByProductsAmount(productName, amount);
     }
 
-    public List<ShopCustomer> getShopCustomersByPriceSum(BigDecimal lowerBound, BigDecimal upperBound) {
-
+    public List<ShopCustomer> getShopCustomersByPriceSum(BigDecimal lowerBound, BigDecimal upperBound)
+            throws SQLException {
+        return shopCustomerDao.getShopCustomersByPriceSum(lowerBound, upperBound);
     }
 
-    public List<ShopCustomer> getShopCustomersByLeastProduct(int limit) {
-
+    public List<ShopCustomer> getShopCustomersByLeastProduct(int limit) throws SQLException {
+        return shopCustomerDao.getShopCustomersByLeastProduct(limit);
     }
 
-    public List<ShopStatistics> getAllInfo(Date lowerBound, Date upperBound) {
-
+    public List<Integer> getEveryCustomerId() throws SQLException {
+        return shopCustomerDao.getEveryId();
     }
 
-    public ShopProduct getShopProductById(int id) {
-
+    public ShopCustomerInfo getCustomerInfo(int customerId, Date lowerBound, Date upperBound) throws SQLException {
+        return shopCustomerDao.getCustomerInfo(customerId, lowerBound, upperBound);
     }
 
-    public List<ShopProduct> getAllShopProducts() {
-
+    public ShopProduct getShopProductById(int id) throws SQLException {
+        return shopProductDao.getShopProductById(id);
     }
 
-    public ShopPurchase getShopPurchaseById(int id) {
-
+    public List<ShopProduct> getAllShopProducts() throws SQLException {
+        return shopProductDao.getAllShopProducts();
     }
 
-    public List<ShopPurchase> getAllShopPurchases() {
-
+    public ShopPurchase getShopPurchaseById(int id) throws SQLException {
+        return shopPurchaseDao.getShopPurchaseById(id);
     }
 
-    public int getTotalDaysAmount(Date lowerBound, Date upperBound) {
+    public List<ShopPurchase> getAllShopPurchases() throws SQLException {
+        return shopPurchaseDao.getAllShopPurchases();
+    }
 
+    public int getTotalDaysAmount(Date lowerBound, Date upperBound) throws SQLException {
+        return shopPurchaseDao.getTotalDaysAmount(lowerBound, upperBound);
     }
 
 }
