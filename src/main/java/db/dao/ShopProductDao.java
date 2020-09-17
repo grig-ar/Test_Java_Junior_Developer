@@ -1,6 +1,5 @@
 package db.dao;
 
-import com.sun.istack.internal.NotNull;
 import db.ShopDatabase;
 import db.entity.ShopProduct;
 
@@ -9,59 +8,50 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class ShopProductDao {
-    @NotNull
-    private final ShopDatabase database;
+    private static final String COLUMN_ID = "id";
+    private static final String COLUMN_NAME = "name";
+    private static final String COLUMN_PRICE = "price";
 
-    public ShopProductDao(@NotNull ShopDatabase database) {
-        Objects.requireNonNull(database);
-
-        this.database = database;
-    }
-
-    public ShopProduct getShopProductById(int id) {
+    public ShopProduct getShopProductById(int id) throws SQLException {
         String query = "SELECT id, name, price FROM product WHERE id = ?";
-        try (PreparedStatement stmt = database.getConnection().prepareStatement(query);
-        ) {
-            stmt.setInt(1, id);
 
-            try (ResultSet resultSet = stmt.executeQuery()) {
-                if (resultSet.next()) {
-                    return new ShopProduct(
-                            resultSet.getInt("id"),
-                            resultSet.getString("name"),
-                            resultSet.getBigDecimal("price"));
-                } else {
-                    return null;
+        return ShopDatabase.execute((conn -> {
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setInt(1, id);
+                ShopProduct product = null;
+                try (ResultSet resultSet = stmt.executeQuery()) {
+                    if (resultSet.next()) {
+                        product = new ShopProduct(
+                                resultSet.getInt(COLUMN_ID),
+                                resultSet.getString(COLUMN_NAME),
+                                resultSet.getBigDecimal(COLUMN_PRICE));
+                    }
                 }
+                return product;
             }
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return null;
+        }));
     }
 
-    public List<ShopProduct> getAllShopProducts() {
+    public List<ShopProduct> getAllShopProducts() throws SQLException {
         List<ShopProduct> products = new ArrayList<>();
         String query = "SELECT id, name, price FROM product";
 
-        try (PreparedStatement stmt = database.getConnection().prepareStatement(query);
-             ResultSet resultSet = stmt.executeQuery()
-        ) {
-            while (resultSet.next()) {
-                products.add(new ShopProduct(
-                        resultSet.getInt("id"),
-                        resultSet.getString("name"),
-                        resultSet.getBigDecimal("price")));
+        return ShopDatabase.execute((conn -> {
+            try (PreparedStatement stmt = conn.prepareStatement(query);
+                 ResultSet resultSet = stmt.executeQuery()
+            ) {
+                while (resultSet.next()) {
+                    products.add(new ShopProduct(
+                            resultSet.getInt(COLUMN_ID),
+                            resultSet.getString(COLUMN_NAME),
+                            resultSet.getBigDecimal(COLUMN_PRICE)));
 
+                }
+                return products;
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return products;
+        }));
     }
 
 }
