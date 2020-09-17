@@ -1,0 +1,74 @@
+{
+  "type": "search",
+  "results": [
+    {
+      "criteria": {
+        "lastName": "A"
+      },
+      "results": [
+        {
+          "lastName": "A",
+          "firstName": "Client"
+        }
+      ]
+    },
+    {
+      "criteria": {
+        "productName": "Product2",
+        "minTimes": 1
+      },
+      "results": [
+        {
+          "lastName": "A",
+          "firstName": "Client"
+        },
+        {
+          "lastName": "C",
+          "firstName": "Client"
+        }
+      ]
+    },
+    {
+      "criteria": {
+        "minExpenses": 4,
+        "maxExpenses": 5
+      },
+      "results": [
+        {
+          "lastName": "B",
+          "firstName": "Client"
+        }
+      ]
+    },
+    {
+      "criteria": {
+        "badCustomers": 3
+      },
+      "results": [
+        {
+          "lastName": "Grigorovich",
+          "firstName": "Artyom"
+        },
+        {
+          "lastName": "B",
+          "firstName": "Client"
+        },
+        {
+          "lastName": "C",
+          "firstName": "Client"
+        }
+      ]
+    },
+    {
+      "criteria": {
+        "lastName": "B"
+      },
+      "results": [
+        {
+          "lastName": "B",
+          "firstName": "Client"
+        }
+      ]
+    }
+  ]
+}

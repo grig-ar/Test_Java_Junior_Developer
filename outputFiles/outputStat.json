@@ -1,0 +1,55 @@
+{
+  "type": "stat",
+  "totalDays": 8,
+  "customers": [
+    {
+      "name": "A Client",
+      "purchases": [
+        {
+          "name": "Product3",
+          "expenses": 3.40
+        },
+        {
+          "name": "Product2",
+          "expenses": 2.30
+        },
+        {
+          "name": "Product1",
+          "expenses": 1.20
+        }
+      ],
+      "totalExpenses": 6.90
+    },
+    {
+      "name": "B Client",
+      "purchases": [
+        {
+          "name": "Product3",
+          "expenses": 3.40
+        },
+        {
+          "name": "Product1",
+          "expenses": 1.20
+        }
+      ],
+      "totalExpenses": 4.60
+    },
+    {
+      "name": "C Client",
+      "purchases": [
+        {
+          "name": "Product2",
+          "expenses": 2.30
+        }
+      ],
+      "totalExpenses": 2.30
+    },
+    {
+      "name": "Grigorovich Artyom",
+      "purchases": [],
+      "totalExpenses": 0
+    }
+  ],
+  "totalExpenses": 13.80,
+  "avgExpenses": 3.45
+}
