@@ -2,9 +2,9 @@
 
 Инструкция по запуску:
 1. Загрузить репозиторий: 
-    1.1 Используя SSH: git clone git@github.com:grig-ar/Test_Java_Junior_Developer.git
-    1.2 Используя HTTPS: git clone https://github.com/grig-ar/Test_Java_Junior_Developer.git
-    1.3 Скачать zip архив
+    * Используя SSH: git clone git@github.com:grig-ar/Test_Java_Junior_Developer.git
+    * Используя HTTPS: git clone https://github.com/grig-ar/Test_Java_Junior_Developer.git
+    * Скачать zip архив
 2. Собрать проект, используя Maven: mvn clean compile assembly:single
 3. Восстановить базу данных из файла ShopDB
 4. Поместить файл конфигурации hikari.properties в директорию с исполняемым jar файлом
