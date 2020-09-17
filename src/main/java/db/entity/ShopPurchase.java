@@ -1,13 +1,13 @@
 package db.entity;
 
-import com.sun.istack.internal.NotNull;
-import model.Purchase;
+import org.jetbrains.annotations.NotNull;
+import model.entity.Purchase;
 
 import java.sql.Date;
 import java.util.Objects;
 
 public class ShopPurchase implements Purchase {
-    @NotNull
+
     private final int id;
 
     @NotNull
@@ -19,8 +19,7 @@ public class ShopPurchase implements Purchase {
     @NotNull
     private final int productId;
 
-    public ShopPurchase(@NotNull int id, @NotNull Date purchaseDate, @NotNull int customerId, @NotNull int productId) {
-        Objects.requireNonNull(id);
+    public ShopPurchase(int id, @NotNull Date purchaseDate, @NotNull int customerId, @NotNull int productId) {
         Objects.requireNonNull(purchaseDate);
         Objects.requireNonNull(customerId);
         Objects.requireNonNull(productId);

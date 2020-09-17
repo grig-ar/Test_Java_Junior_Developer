@@ -1,45 +1,31 @@
 package db.entity;
 
-import com.sun.istack.internal.NotNull;
-import model.Customer;
-import model.Product;
-import model.CustomerInfo;
+import org.jetbrains.annotations.NotNull;
+import model.entity.CustomerInfo;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.util.List;
 import java.util.Objects;
 
 public class ShopCustomerInfo implements CustomerInfo {
 
     @NotNull
-    private final Customer customer;
-
-    @NotNull
-    private final List<Product> products;
+    private final List<String> productNames;
 
     @NotNull
     private final List<BigDecimal> expenses;
 
-    public ShopCustomerInfo(@NotNull Customer customer, @NotNull List<Product> products,
-                            @NotNull List<BigDecimal> expenses) {
-        Objects.requireNonNull(customer);
-        Objects.requireNonNull(products);
+    public ShopCustomerInfo(@NotNull List<String> productNames, @NotNull List<BigDecimal> expenses) {
+        Objects.requireNonNull(productNames);
         Objects.requireNonNull(expenses);
 
-        this.customer = customer;
-        this.products = products;
+        this.productNames = productNames;
         this.expenses = expenses;
     }
 
     @Override
-    public Customer getCustomer() {
-        return this.customer;
-    }
-
-    @Override
-    public List<Product> getProducts() {
-        return this.products;
+    public List<String> getProductNames() {
+        return this.productNames;
     }
 
     @Override

@@ -1,13 +1,13 @@
 package db.entity;
 
-import com.sun.istack.internal.NotNull;
-import model.Product;
+import org.jetbrains.annotations.NotNull;
+import model.entity.Product;
 
 import java.math.BigDecimal;
 import java.util.Objects;
 
 public class ShopProduct implements Product {
-    @NotNull
+
     private final transient int id;
 
     @NotNull
@@ -16,8 +16,7 @@ public class ShopProduct implements Product {
     @NotNull
     private final BigDecimal price;
 
-    public ShopProduct(@NotNull int id, @NotNull String name, @NotNull BigDecimal price) {
-        Objects.requireNonNull(id);
+    public ShopProduct(int id, @NotNull String name, @NotNull BigDecimal price) {
         Objects.requireNonNull(name);
         Objects.requireNonNull(price);
 

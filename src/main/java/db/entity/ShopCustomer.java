@@ -1,12 +1,12 @@
 package db.entity;
 
-import com.sun.istack.internal.NotNull;
-import model.Customer;
+import org.jetbrains.annotations.NotNull;
+import model.entity.Customer;
 
 import java.util.Objects;
 
 public class ShopCustomer implements Customer {
-    @NotNull
+
     private final transient int id;
 
     @NotNull
@@ -15,8 +15,7 @@ public class ShopCustomer implements Customer {
     @NotNull
     private final String firstName;
 
-    public ShopCustomer(@NotNull int id, @NotNull String firstName, @NotNull String lastName) {
-        Objects.requireNonNull(id);
+    public ShopCustomer(int id, @NotNull String firstName, @NotNull String lastName) {
         Objects.requireNonNull(firstName);
         Objects.requireNonNull(lastName);
 
