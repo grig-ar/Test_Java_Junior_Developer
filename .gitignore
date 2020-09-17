@@ -3,7 +3,6 @@
 .idea
 out
 target
-*.properties
 
 # Compiled class file
 *.class
