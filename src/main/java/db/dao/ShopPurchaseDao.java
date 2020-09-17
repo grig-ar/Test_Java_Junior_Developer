@@ -1,94 +1,83 @@
 package db.dao;
 
-import com.sun.istack.internal.NotNull;
 import db.ShopDatabase;
 import db.entity.ShopPurchase;
 
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class ShopPurchaseDao {
-    @NotNull
-    private final ShopDatabase database;
+    private static final String COLUMN_ID = "id";
+    private static final String COLUMN_DATE = "purchase_date";
+    private static final String COLUMN_CUSTOMER_ID = "customer_id";
+    private static final String COLUMN_PRODUCT_ID = "product_id";
 
-    public ShopPurchaseDao(@NotNull ShopDatabase database) {
-        Objects.requireNonNull(database);
-
-        this.database = database;
-    }
-
-    public ShopPurchase getShopPurchaseById(int id) {
+    public ShopPurchase getShopPurchaseById(int id) throws SQLException {
         String query = "SELECT id, purchase_date, customer_id, product_id FROM purchase WHERE id = ?";
-        try (PreparedStatement stmt = database.getConnection().prepareStatement(query);
-        ) {
-            stmt.setInt(1, id);
 
-            try (ResultSet resultSet = stmt.executeQuery()) {
-                if (resultSet.next()) {
-                    return new ShopPurchase(
-                            resultSet.getInt("id"),
-                            resultSet.getDate("purchase_date"),
-                            resultSet.getInt("customer_id"),
-                            resultSet.getInt("product_id"));
-                } else {
-                    return null;
+        return ShopDatabase.execute((conn -> {
+            try (PreparedStatement stmt = conn.prepareStatement(query);
+            ) {
+                stmt.setInt(1, id);
+                ShopPurchase purchase = null;
+
+                try (ResultSet resultSet = stmt.executeQuery()) {
+                    if (resultSet.next()) {
+                        purchase = new ShopPurchase(
+                                resultSet.getInt(COLUMN_ID),
+                                resultSet.getDate(COLUMN_DATE),
+                                resultSet.getInt(COLUMN_CUSTOMER_ID),
+                                resultSet.getInt(COLUMN_PRODUCT_ID));
+                    }
                 }
+                return purchase;
             }
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return null;
+        }));
     }
 
-    public List<ShopPurchase> getAllShopPurchases() {
+    public List<ShopPurchase> getAllShopPurchases() throws SQLException {
         List<ShopPurchase> purchases = new ArrayList<>();
         String query = "SELECT id, purchase_date, customer_id, product_id FROM purchase";
 
-        try (PreparedStatement stmt = database.getConnection().prepareStatement(query);
-             ResultSet resultSet = stmt.executeQuery()
-        ) {
-            while (resultSet.next()) {
-                purchases.add(new ShopPurchase(
-                        resultSet.getInt("id"),
-                        resultSet.getDate("purchase_date"),
-                        resultSet.getInt("customer_id"),
-                        resultSet.getInt("product_id")));
+        return ShopDatabase.execute((conn -> {
+            try (PreparedStatement stmt = conn.prepareStatement(query);
+                 ResultSet resultSet = stmt.executeQuery()
+            ) {
+                while (resultSet.next()) {
+                    purchases.add(new ShopPurchase(
+                            resultSet.getInt(COLUMN_ID),
+                            resultSet.getDate(COLUMN_DATE),
+                            resultSet.getInt(COLUMN_CUSTOMER_ID),
+                            resultSet.getInt(COLUMN_PRODUCT_ID)));
 
+                }
+                return purchases;
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return purchases;
+        }));
     }
 
-    public int getTotalDaysAmount(Date lowerBound, Date upperBound) {
+    public Integer getTotalDaysAmount(Date lowerBound, Date upperBound) throws SQLException {
         String query = "SELECT COUNT(the_day) " +
                 " FROM ( " +
-                " SELECT generate_series(?, ?, '1 day') AS the_day " +
+                " SELECT generate_series(?::timestamp, ?, '1 day') AS the_day " +
                 " ) days " +
                 " WHERE EXTRACT('ISODOW' FROM the_day) < 6";
 
-        try (PreparedStatement stmt = database.getConnection().prepareStatement(query);
-        ) {
-            stmt.setDate(1, lowerBound);
-            stmt.setDate(2, upperBound);
-            try (ResultSet resultSet = stmt.executeQuery()) {
-                if (resultSet.next()) {
-                    return resultSet.getInt(1);
-                } else {
-                    return 0;
+        return ShopDatabase.execute((conn -> {
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setDate(1, lowerBound);
+                stmt.setDate(2, upperBound);
+                int totalDays = -1;
+
+                try (ResultSet resultSet = stmt.executeQuery()) {
+                    if (resultSet.next()) {
+                        totalDays = resultSet.getInt(1);
+                    }
                 }
+                return totalDays;
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return -1;
+        }));
     }
 
 }
