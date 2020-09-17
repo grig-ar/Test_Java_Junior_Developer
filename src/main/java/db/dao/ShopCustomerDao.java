@@ -1,9 +1,8 @@
 package db.dao;
 
-import com.sun.istack.internal.NotNull;
 import db.ShopDatabase;
 import db.entity.ShopCustomer;
-import db.entity.ShopStatistics;
+import db.entity.ShopCustomerInfo;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -12,82 +11,75 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class ShopCustomerDao {
-    @NotNull
-    private final ShopDatabase database;
+    private static final String COLUMN_ID = "id";
+    private static final String COLUMN_FIRST_NAME = "first_name";
+    private static final String COLUMN_LAST_NAME = "last_name";
 
-    public ShopCustomerDao(@NotNull ShopDatabase database) {
-        Objects.requireNonNull(database);
-
-        this.database = database;
-    }
-
-    public ShopCustomer getShopCustomerById(int id) {
+    public ShopCustomer getShopCustomerById(int id) throws SQLException {
         String query = "SELECT id, first_name, last_name FROM customer WHERE id = ?";
-        try (PreparedStatement stmt = database.getConnection().prepareStatement(query)) {
-            stmt.setInt(1, id);
 
-            try (ResultSet resultSet = stmt.executeQuery()) {
-                if (resultSet.next()) {
-                    return new ShopCustomer(
-                            resultSet.getInt("id"),
-                            resultSet.getString("first_name"),
-                            resultSet.getString("last_name"));
-                } else {
-                    return null;
+        return ShopDatabase.execute((conn -> {
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setInt(1, id);
+                ShopCustomer customer = null;
+                try (ResultSet resultSet = stmt.executeQuery()) {
+                    if (resultSet.next()) {
+                        customer = new ShopCustomer(
+                                resultSet.getInt(COLUMN_ID),
+                                resultSet.getString(COLUMN_FIRST_NAME),
+                                resultSet.getString(COLUMN_LAST_NAME));
+                    }
                 }
+                return customer;
             }
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return null;
+        }));
     }
 
-    public List<ShopCustomer> getAllShopCustomers() {
+    public List<ShopCustomer> getAllShopCustomers() throws SQLException {
         List<ShopCustomer> customers = new ArrayList<>();
         String query = "SELECT id, first_name, last_name FROM customer";
 
-        try (PreparedStatement stmt = database.getConnection().prepareStatement(query);
-             ResultSet resultSet = stmt.executeQuery()
-        ) {
-            while (resultSet.next()) {
-                customers.add(new ShopCustomer(
-                        resultSet.getInt("id"),
-                        resultSet.getString("first_name"),
-                        resultSet.getString("last_name")));
-
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return customers;
-    }
-
-    public List<ShopCustomer> getShopCustomersByLastName(String lastName) {
-        List<ShopCustomer> customers = new ArrayList<>();
-        String query = "SELECT id, first_name, last_name FROM customer WHERE last_name = ?";
-        try (PreparedStatement stmt = database.getConnection().prepareStatement(query)) {
-            stmt.setString(1, lastName);
-
-            try (ResultSet resultSet = stmt.executeQuery()) {
+        return ShopDatabase.execute((conn -> {
+            try (PreparedStatement stmt = conn.prepareStatement(query);
+                 ResultSet resultSet = stmt.executeQuery()
+            ) {
                 while (resultSet.next()) {
                     customers.add(new ShopCustomer(
-                            resultSet.getInt("id"),
-                            resultSet.getString("first_name"),
-                            resultSet.getString("last_name")));
-                }
-            }
+                            resultSet.getInt(COLUMN_ID),
+                            resultSet.getString(COLUMN_FIRST_NAME),
+                            resultSet.getString(COLUMN_LAST_NAME)));
 
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return customers;
+                }
+                return customers;
+            }
+        }));
     }
 
-    public List<ShopCustomer> getShopCustomersByProductsAmount(String productName, int amount) {
+    public List<ShopCustomer> getShopCustomersByLastName(String lastName) throws SQLException {
+        List<ShopCustomer> customers = new ArrayList<>();
+        String query = "SELECT id, first_name, last_name FROM customer WHERE last_name = ?";
+
+        return ShopDatabase.execute((conn -> {
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setString(1, lastName);
+
+                try (ResultSet resultSet = stmt.executeQuery()) {
+                    while (resultSet.next()) {
+                        customers.add(new ShopCustomer(
+                                resultSet.getInt(COLUMN_ID),
+                                resultSet.getString(COLUMN_FIRST_NAME),
+                                resultSet.getString(COLUMN_LAST_NAME)));
+                    }
+                }
+                return customers;
+            }
+        }));
+    }
+
+    public List<ShopCustomer> getShopCustomersByProductsAmount(String productName, int amount)
+            throws SQLException {
         List<ShopCustomer> customers = new ArrayList<>();
         String query = "SELECT id, last_name, first_name " +
                 " FROM customer " +
@@ -99,26 +91,27 @@ public class ShopCustomerDao {
                 " GROUP BY customer_id " +
                 " HAVING COUNT(*) >= ? " +
                 ")";
-        try (PreparedStatement stmt = database.getConnection().prepareStatement(query)) {
-            stmt.setString(1, productName);
-            stmt.setInt(2, amount);
 
-            try (ResultSet resultSet = stmt.executeQuery()) {
-                while (resultSet.next()) {
-                    customers.add(new ShopCustomer(
-                            resultSet.getInt("id"),
-                            resultSet.getString("first_name"),
-                            resultSet.getString("last_name")));
+        return ShopDatabase.execute((conn -> {
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setString(1, productName);
+                stmt.setInt(2, amount);
+
+                try (ResultSet resultSet = stmt.executeQuery()) {
+                    while (resultSet.next()) {
+                        customers.add(new ShopCustomer(
+                                resultSet.getInt(COLUMN_ID),
+                                resultSet.getString(COLUMN_FIRST_NAME),
+                                resultSet.getString(COLUMN_LAST_NAME)));
+                    }
                 }
+                return customers;
             }
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return customers;
+        }));
     }
 
-    public List<ShopCustomer> getShopCustomersByPriceSum(BigDecimal lowerBound, BigDecimal upperBound) {
+    public List<ShopCustomer> getShopCustomersByPriceSum(BigDecimal lowerBound, BigDecimal upperBound)
+            throws SQLException {
         List<ShopCustomer> customers = new ArrayList<>();
         String query = "SELECT id, last_name, first_name " +
                 " FROM customer " +
@@ -129,82 +122,91 @@ public class ShopCustomerDao {
                 " GROUP BY customer_id " +
                 " HAVING SUM(price) BETWEEN ? AND ? " +
                 ")";
-        try (PreparedStatement stmt = database.getConnection().prepareStatement(query)) {
-            stmt.setBigDecimal(1, lowerBound);
-            stmt.setBigDecimal(2, upperBound);
 
-            try (ResultSet resultSet = stmt.executeQuery()) {
-                while (resultSet.next()) {
-                    customers.add(new ShopCustomer(
-                            resultSet.getInt("id"),
-                            resultSet.getString("first_name"),
-                            resultSet.getString("last_name")));
+        return ShopDatabase.execute((conn -> {
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setBigDecimal(1, lowerBound);
+                stmt.setBigDecimal(2, upperBound);
+
+                try (ResultSet resultSet = stmt.executeQuery()) {
+                    while (resultSet.next()) {
+                        customers.add(new ShopCustomer(
+                                resultSet.getInt(COLUMN_ID),
+                                resultSet.getString(COLUMN_FIRST_NAME),
+                                resultSet.getString(COLUMN_LAST_NAME)));
+                    }
                 }
+                return customers;
             }
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return customers;
+        }));
     }
 
-    public List<ShopCustomer> getShopCustomersByLeastProduct(int limit) {
+    public List<ShopCustomer> getShopCustomersByLeastProduct(int limit) throws SQLException {
         List<ShopCustomer> customers = new ArrayList<>();
-        String query = "SELECT id, last_name, first_name " +
-                " FROM customer " +
-                " WHERE id in ( " +
-                " SELECT customer_id " +
-                " FROM purchase " +
-                " GROUP BY customer_id " +
-                " ORDER BY count(*) " +
-                " LIMIT ? " +
-                ")";
-        try (PreparedStatement stmt = database.getConnection().prepareStatement(query)) {
-            stmt.setInt(1, limit);
+        String query = "SELECT customer.id, customer.last_name, customer.first_name " +
+                " from customer " +
+                " left outer join purchase on customer.id = customer_id " +
+                " group by customer.id, customer.last_name, customer.first_name " +
+                " order by coalesce(count(purchase.id), 0) " +
+                " limit ?";
 
-            try (ResultSet resultSet = stmt.executeQuery()) {
-                while (resultSet.next()) {
-                    customers.add(new ShopCustomer(
-                            resultSet.getInt("id"),
-                            resultSet.getString("first_name"),
-                            resultSet.getString("last_name")));
+        return ShopDatabase.execute((conn -> {
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setInt(1, limit);
+
+                try (ResultSet resultSet = stmt.executeQuery()) {
+                    while (resultSet.next()) {
+                        customers.add(new ShopCustomer(
+                                resultSet.getInt(COLUMN_ID),
+                                resultSet.getString(COLUMN_FIRST_NAME),
+                                resultSet.getString(COLUMN_LAST_NAME)));
+                    }
                 }
+                return customers;
             }
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return customers;
+        }));
     }
 
-    public List<ShopStatistics> getAllInfo(Date lowerBound, Date upperBound) {
-        List<ShopStatistics> statistics = new ArrayList<>();
-        String query = "SELECT customer.id, product.id, SUM(price) AS expenses " +
+    public List<Integer> getEveryId() throws SQLException {
+        List<Integer> indices = new ArrayList<>();
+        String query = "SELECT id FROM customer";
+
+        return ShopDatabase.execute((conn -> {
+            try (PreparedStatement stmt = conn.prepareStatement(query);
+                 ResultSet resultSet = stmt.executeQuery()) {
+                while (resultSet.next()) {
+                    indices.add(resultSet.getInt("id"));
+                }
+                return indices;
+            }
+        }));
+    }
+
+    public ShopCustomerInfo getCustomerInfo(int customerId, Date lowerBound, Date upperBound) throws SQLException {
+        List<String> productNames = new ArrayList<>();
+        List<BigDecimal> expenses = new ArrayList<>();
+
+        String query = "SELECT customer.id, product.name, SUM(price) AS expenses " +
                 " FROM purchase " +
                 " JOIN product ON purchase.product_id = product.id " +
                 " JOIN customer ON purchase.customer_id = customer.id " +
-                " WHERE purchase_date BETWEEN ? AND ? " +
-                " GROUP BY customer.id, customer.first_name, customer.last_name, product.name " +
-                " ORDER BY customer.first_name, customer.last_name, (SUM(price)) DESC";
+                " WHERE customer.id = ? AND purchase_date BETWEEN ? AND ? " +
+                " GROUP BY customer.id, product.name " +
+                " ORDER BY customer.id, (SUM(price)) DESC";
 
-        try (PreparedStatement stmt = database.getConnection().prepareStatement(query)) {
-            stmt.setDate(1, lowerBound);
-            stmt.setDate(2, upperBound);
-
-            try (ResultSet resultSet = stmt.executeQuery()) {
-                while (resultSet.next()) {
-                    statistics.add(new ShopStatistics(
-                            lowerBound,
-                            upperBound,
-                            database.getCustomerDao().getShopCustomerById(resultSet.getInt("customer.id")),
-                            database.getProductDao().getShopProductById(resultSet.getInt("product.id")),
-                            resultSet.getBigDecimal("expenses")));
+        return ShopDatabase.execute((conn -> {
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setInt(1, customerId);
+                stmt.setDate(2, lowerBound);
+                stmt.setDate(3, upperBound);
+                try (ResultSet resultSet = stmt.executeQuery()) {
+                    while (resultSet.next()) {
+                        productNames.add(resultSet.getString("name"));
+                        expenses.add(resultSet.getBigDecimal("expenses"));
+                    }
                 }
+                return new ShopCustomerInfo(productNames, expenses);
             }
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return statistics;
+        }));
     }
 }
