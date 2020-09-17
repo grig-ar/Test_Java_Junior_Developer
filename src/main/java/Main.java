@@ -15,7 +15,7 @@ public class Main {
         BasicConfigurator.configure();
         HikariConfig config = null;
         try {
-            config = new HikariConfig("src\\main\\resources\\hikari.properties");
+            config = new HikariConfig("hikari.properties");
         } catch (IllegalArgumentException ex) {
             System.err.println("There is no 'hikari.properties' file in the current directory.");
             return;
