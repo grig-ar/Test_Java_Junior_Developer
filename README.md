@@ -1,6 +1,6 @@
 # Test_Java_Junior_Developer
 
-Инструкция по запуску:
+Инструкция по запуску
 1. Загрузить репозиторий: 
     * Используя SSH: git clone git@github.com:grig-ar/Test_Java_Junior_Developer.git
     * Используя HTTPS: git clone https://github.com/grig-ar/Test_Java_Junior_Developer.git
